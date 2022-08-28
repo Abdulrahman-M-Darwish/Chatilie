@@ -12,7 +12,7 @@ const ChatRoom = () => {
 	const id = user.uid > user2 ? user.uid + user2 : user2 + user.uid;
 	const scroller = useRef(0);
 	const handelScroll = (e) => {
-		console.log(e.target.scrollTop, e.target.offsetHeight);
+		// console.log(e.target.scrollTop, e.target.offsetHeight);
 	};
 	useEffect(() => {
 		const unSubscribe = onSnapshot(

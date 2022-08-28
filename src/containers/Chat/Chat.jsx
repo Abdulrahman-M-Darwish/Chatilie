@@ -1,5 +1,5 @@
 import React from "react";
-import { ChannelListContainer, ChatRoom } from "../../components";
+import { ChannelListContainer, ChatRoom, EmptyRoom } from "../../components";
 import { Routes, Route } from "react-router-dom";
 
 const Chat = () => {
@@ -9,6 +9,7 @@ const Chat = () => {
 				<ChannelListContainer dir="left" />
 				<Routes>
 					<Route path=":id" element={<ChatRoom />} />
+					<Route path="/" element={<EmptyRoom />} />
 				</Routes>
 			</div>
 		</div>
