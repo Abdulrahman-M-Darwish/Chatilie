@@ -9,3 +9,4 @@ export { default as UserNav } from "./UserNav";
 export { default as SendMessage } from "./SendMessage";
 export { default as LastMessage } from "./LastMessage";
 export { default as Message } from "./Message";
+export { default as EmptyRoom } from "./EmptyRoom";

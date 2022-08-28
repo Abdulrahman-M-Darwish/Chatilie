@@ -26,7 +26,6 @@ const ChannelListPreview = () => {
 			lastMessage.data().from !== currentUser.uid
 		) {
 			updateDoc(docRef, { unRead: false });
-			console.log("ok");
 		}
 	};
 	useEffect(() => {

@@ -1,24 +1,32 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Protected } from "./components";
+import { getToken } from "firebase/messaging";
+import { messaging } from "./firbase";
 import { Chat, Registration, Home } from "./containers";
 import { useAuthContext } from "./context/AuthContext";
 
 const App = () => {
 	const { user, logout } = useAuthContext();
 	useEffect(() => {
-		if (!("Notification" in window)) {
-			alert("This browser does not support desktop notification");
-		} else if (
-			Notification.permission !== "denied" &&
-			Notification.permission !== "granted"
-		) {
-			Notification.requestPermission().then((permission) => {
-				if (permission === "granted") {
-					const notification = new Notification("Welcome to chat clone!");
-				}
-			});
-		}
+		console.log("Requesting permission...");
+		Notification.requestPermission().then((permission) => {
+			if (permission === "granted") {
+				getToken(messaging, { vapidKey: "<YOUR_PUBLIC_VAPID_KEY_HERE>" })
+					.then((currentToken) => {
+						if (currentToken) {
+							console.log("ok");
+						} else {
+							console.log(
+								"No registration token available. Request permission to generate one."
+							);
+						}
+					})
+					.catch((err) => {
+						console.log("An error occurred while retrieving token. ", err);
+					});
+			}
+		});
 	}, []);
 	return (
 		<div className="min-h-screen flex flex-col bg-[#f8f8f8]">
