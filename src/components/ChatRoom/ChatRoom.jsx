@@ -12,7 +12,7 @@ const ChatRoom = () => {
 	const id = user.uid > user2 ? user.uid + user2 : user2 + user.uid;
 	const scroller = useRef(0);
 	const handelScroll = (e) => {
-		// console.log(e.target.scrollTop, e.target.offsetHeight);
+		console.log(e.target.scrollTop, e.target.lastElementChild.scrollTop);
 	};
 	useEffect(() => {
 		const unSubscribe = onSnapshot(
@@ -23,6 +23,7 @@ const ChatRoom = () => {
 				);
 			}
 		);
+		scroller.current.scrollIntoView({ behavior: "smooth" });
 		return () => unSubscribe();
 	}, [user2]);
 	return (
@@ -36,7 +37,7 @@ const ChatRoom = () => {
 					{messages.map((message) => (
 						<Message key={message.id} {...message} />
 					))}
-					<span ref={scroller} className="h-8"></span>
+					<span ref={scroller}></span>
 				</ul>
 			</div>
 			<SendMessage scroller={scroller} />

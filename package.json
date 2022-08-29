@@ -6,13 +6,16 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"deploy": "firebase deploy --only hosting"
 	},
 	"dependencies": {
 		"emoji-picker-react": "^3.6.1",
 		"firebase": "^9.9.2",
+		"framer-motion": "^7.2.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-google-button": "^0.7.2",
 		"react-icons": "^4.4.0",
 		"react-router-dom": "^6.3.0",
 		"uuid": "^8.3.2"

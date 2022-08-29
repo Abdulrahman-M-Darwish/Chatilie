@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import { BsEmojiSmile, BsMicFill } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
@@ -25,25 +25,26 @@ import Picker from "emoji-picker-react";
 const SendMessage = ({ scroller }) => {
 	const { id: user2 } = useParams();
 	const [text, setText] = useState("");
-	const [file, setFile] = useState(null);
 	const [images, setImages] = useState([]);
 	const [showPicker, setShowPicker] = useState(false);
+	const input = useRef();
 	const { user } = useAuthContext();
 	const id = user.uid > user2 ? user.uid + user2 : user2 + user.uid;
+	const file = useRef(null);
 	useEffect(() => {
-		const uploadImage = async () => {
-			if (file) {
-				const snapshot = await uploadBytes(
-					ref(storage, `images/${v4()}-${file.name}`),
-					file
-				);
-				console.log(snapshot.ref);
-				const dlUrl = await getDownloadURL(ref(storage, snapshot.ref.fullPath));
-				setImages((p) => [...p, { dlUrl, fullPath: snapshot.ref.fullPath }]);
-			}
-		};
-		uploadImage();
-	}, [file]);
+		input.current.focus();
+	}, [user2]);
+	const handelChange = async (e) => {
+		file.current = e.target.files[0];
+		if (file.current) {
+			const snapshot = await uploadBytes(
+				ref(storage, `images/${v4()}-${file.current.name}`),
+				file.current
+			);
+			const dlUrl = await getDownloadURL(ref(storage, snapshot.ref.fullPath));
+			setImages((p) => [...p, { dlUrl, fullPath: snapshot.ref.fullPath }]);
+		}
+	};
 	const onEmojiClick = (event, emojiObject) => {
 		setText((p) => p + emojiObject.emoji);
 	};
@@ -56,7 +57,6 @@ const SendMessage = ({ scroller }) => {
 		if (!images.length && text.split(" ").join("").length === 0) {
 			return setText("");
 		}
-		console.log("sendeing");
 		await addDoc(collection(db, `messages/${id}/chat`), {
 			text,
 			photoURL: user.photoURL,
@@ -75,8 +75,8 @@ const SendMessage = ({ scroller }) => {
 		});
 		setText("");
 		setImages([]);
-		setFile(null);
 		setShowPicker(false);
+		file.current = null;
 		scroller.current.scrollIntoView({ behavior: "smooth" });
 	};
 	return (
@@ -131,13 +131,14 @@ const SendMessage = ({ scroller }) => {
 						placeholder="Write a message"
 						contentEditable="true"
 						onChange={(e) => setText(e.target.value)}
+						ref={input}
 						value={text}
 					/>
 					<input
 						type="file"
 						id="attach"
 						className="hidden"
-						onChange={(e) => setFile(e.target.files[0])}
+						onChange={handelChange}
 					/>
 					<button className="text-slate-500">
 						{text ? <IoMdSend size={24} /> : <BsMicFill size={24} />}

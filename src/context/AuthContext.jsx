@@ -18,8 +18,8 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		const unSubscribe = onAuthStateChanged(auth, (user) => {
 			setUser(user);
-			console.log(user);
 		});
+		console.log(user);
 		return () => {
 			unSubscribe();
 		};
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 		userName,
 		uniqeName,
 		email,
-		photoUrl,
+		photoURL,
 		password,
 		confirmPassword,
 	}) => {
@@ -38,11 +38,15 @@ export const AuthProvider = ({ children }) => {
 		const result = await createUserWithEmailAndPassword(auth, email, password);
 		await updateProfile(auth.currentUser, {
 			displayName: userName,
-			photoURL: photoUrl,
+			photoURL:
+				photoURL ||
+				"https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png",
 		});
 		await setDoc(doc(db, "users", result.user.uid), {
 			displayName: userName,
-			photoURL: photoUrl,
+			photoURL:
+				photoURL ||
+				"https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png",
 			uniqeName,
 			isOnline: true,
 			uid: result.user.uid,

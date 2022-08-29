@@ -11,7 +11,7 @@ const Registration = () => {
 		userName: "",
 		uniqeName: "",
 		email: "",
-		photoUrl: "",
+		photoURL: "",
 		password: "",
 		confirmPassword: "",
 	});
@@ -99,21 +99,21 @@ const Registration = () => {
 				{isSignup && (
 					<>
 						<label
-							htmlFor="photoUrl"
-							className={form.photoUrl ? `text-green-500` : ""}
+							htmlFor="photoURL"
+							className={form.photoURL ? `text-green-500` : ""}
 						>
 							Photo Url
 						</label>
 						<input
 							onChange={handelChange}
 							className={
-								form.photoUrl
+								form.photoURL
 									? `${style.input} mt-2 border-green-400`
 									: style.input
 							}
 							type="text"
-							name="photoUrl"
-							id="photoUrl"
+							name="photoURL"
+							id="photoURL"
 						/>
 					</>
 				)}

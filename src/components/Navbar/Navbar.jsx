@@ -38,7 +38,7 @@ const Navbar = () => {
 					</Link>
 				</li>
 				<li>
-					<Link to="/chat">
+					<Link to="/profile">
 						<div className="bg-slate-500 p-3 rounded-full cursor-pointer hover:bg-slate-700 hover:text-emerald-400 transition-all">
 							<CgProfile size={24} />
 						</div>
@@ -46,9 +46,7 @@ const Navbar = () => {
 				</li>
 			</ul>
 			<div className="flex gap-3">
-				{user && (
-					<User displayName={user.displayName} photoURL={user.photoURL} />
-				)}
+				<User displayName={user.displayName} photoURL={user.photoURL} />
 				<div className="flex gap-2 items-center">
 					<div className="p-3 bg-slate-500 hover:bg-slate-700 transition-all rounded-full text-white hover:text-emerald-400 cursor-pointer">
 						<BsSearch />

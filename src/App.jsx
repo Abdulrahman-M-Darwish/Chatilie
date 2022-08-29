@@ -1,56 +1,29 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Protected } from "./components";
 import { getToken } from "firebase/messaging";
-import { messaging } from "./firbase";
-import { Chat, Registration, Home } from "./containers";
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate, useHref } from "react-router-dom";
+import { Chat, Registration, Home, Profile } from "./containers";
 import { useAuthContext } from "./context/AuthContext";
+import { messaging } from "./firbase";
 
 const App = () => {
-	const { user, logout } = useAuthContext();
-	useEffect(() => {
-		console.log("Requesting permission...");
-		Notification.requestPermission().then((permission) => {
-			if (permission === "granted") {
-				getToken(messaging, { vapidKey: "<YOUR_PUBLIC_VAPID_KEY_HERE>" })
-					.then((currentToken) => {
-						if (currentToken) {
-							console.log("ok");
-						} else {
-							console.log(
-								"No registration token available. Request permission to generate one."
-							);
-						}
-					})
-					.catch((err) => {
-						console.log("An error occurred while retrieving token. ", err);
-					});
-			}
-		});
-	}, []);
+	const { user } = useAuthContext();
 	return (
 		<div className="min-h-screen flex flex-col bg-[#f8f8f8]">
-			<Router>
-				<Routes>
-					<Route
-						path="/chat/*"
-						element={
-							<Protected>
-								<Chat />
-							</Protected>
-						}
-					/>
-					<Route
-						path="/"
-						element={
-							<Protected>
-								<Home />
-							</Protected>
-						}
-					/>
-					<Route path="/registration" element={<Registration />} />
-				</Routes>
-			</Router>
+			<Routes>
+				<Route
+					path="/chat/*"
+					element={user ? <Chat /> : <Navigate to="/registration" />}
+				/>
+				<Route
+					path="/"
+					element={user ? <Home /> : <Navigate to="/registration" />}
+				/>
+				<Route
+					path="profile/*"
+					element={user ? <Profile /> : <Navigate to="/registration" />}
+				/>
+				<Route path="/registration" element={<Registration />} />
+			</Routes>
 		</div>
 	);
 };
