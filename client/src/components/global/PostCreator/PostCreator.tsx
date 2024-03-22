@@ -9,16 +9,21 @@ import { FaUserFriends } from "react-icons/fa";
 import { MdOutlineLockOpen } from "react-icons/md";
 import { ImAttachment } from "react-icons/im";
 import { EmojiPicker } from "../EmojiPicker/EmojiPicker";
-import Image from "next/image";
-import { useMutation } from "@apollo/client";
-import { CREATE_POST, UPDATE_POST, UPLOAD_MEDIAS } from "./operations";
 import { DynamicDropdown } from "@/components";
 import { updatePost } from "@/store/features";
 import { removeUnchangedFields } from "@/utils";
 import { PostHead } from "../Post/PostHead";
 import { PostBodyImages } from "../Post/PostBodyImages";
+import { PostAvatar } from "../Post/PostAvatar";
+import { useMutation } from "@apollo/client";
+import { CREATE_POST, UPDATE_POST, UPLOAD_MEDIAS } from "./operations";
 
-export const PostCreator: React.FC<{ post?: Post }> = ({ post }) => {
+type Props = {
+	userName?: string;
+	post?: Post;
+};
+
+export const PostCreator: React.FC<Props> = ({ post, userName }) => {
 	const postCreatorRef = useRef<HTMLDivElement>(null);
 	const dispatch = useAppDispatch();
 	const user = useAppSelector((state) => state.user.user) as User;
@@ -28,6 +33,7 @@ export const PostCreator: React.FC<{ post?: Post }> = ({ post }) => {
 	const [caretPosition, setCaretPosition] = useState(0);
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
+	const isMe = user.name == (userName || user.name);
 	useAutoSizeTextArea(textAreaRef.current, text);
 	useBase64(buttonRef.current, (base64Image) =>
 		setMediaUrls((p) => [...p, base64Image])
@@ -106,19 +112,17 @@ export const PostCreator: React.FC<{ post?: Post }> = ({ post }) => {
 		postCreatorRef.current?.scrollIntoView({ behavior: "smooth" });
 		textAreaRef.current?.focus();
 	}, [post]);
+	if (!isMe) return;
 	return (
 		<div
 			ref={postCreatorRef}
 			className="Post self-center w-full bg-base-300 py-4 rounded-box"
 		>
 			<div className="flex">
-				<button className="w-14 h-14 btn btn-circle overflow-hidden ml-4 bg-neutral">
-					<Image width={56} height={56} src={user.avatar} alt="avatar" />
-				</button>
+				<PostAvatar source={user.avatar} />
 				<div className="flex-1">
 					<PostHead
 						privacy={privacy}
-						avatar={post?.author.avatar || user.avatar}
 						createdAt={post?.createdAt || "Not Yet"}
 						name={post?.author?.name || user.name}
 						username={post?.author?.username || user.username}

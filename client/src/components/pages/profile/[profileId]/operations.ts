@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_FRIENDS = gql`
-	query GetFriends($userId: ID) {
+	query operationsGetFriendsQuery($userId: ID) {
 		chats(userId: $userId) {
 			avatar
 			name

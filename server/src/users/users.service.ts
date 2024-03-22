@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { Gender } from 'src/profiles/entities/profile.entity';
 import { PubSubService } from 'src/pubsub/pubsub.service';
+import { ElasticsearchService } from 'src/elasticsearch/elasticsearch.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +16,8 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly profilesService: ProfilesService,
     private readonly pubSubService: PubSubService,
+    private readonly elasticsearchService: ElasticsearchService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
   async create(createUserInput: CreateUserInput) {
     const avatar = `https://api.dicebear.com/6.x/pixel-art/png?${
@@ -30,10 +34,19 @@ export class UsersService {
       user,
       gender: createUserInput.gender,
     });
+    console.log('yes');
+    this.eventEmitter.emit('addToIndex', {
+      document: { ...theUser, ...profile },
+      index: 'users',
+    });
     return { ...theUser, profile };
   }
   async findAll() {
-    return await this.usersRepository.find({ relations: { profile: true } });
+    const result = await this.elasticsearchService.search({
+      index: 'users',
+    });
+    console.log(result.hits.hits);
+    return result;
   }
   async findOne(id: string) {
     const user = await this.usersRepository

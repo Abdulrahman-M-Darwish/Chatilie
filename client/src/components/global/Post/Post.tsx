@@ -7,7 +7,7 @@ import { PostHead } from "./PostHead";
 import { PostBody } from "./PostBody";
 import { PostInteractions } from "./PostInteractions";
 import { PostRePostBody } from "./PostRePostBody";
-import Image from "next/image";
+import { PostAvatar } from "./PostAvatar";
 
 const PostEditor = dynamic(() =>
 	import("@/components").then((mod) => mod.PostCreator)
@@ -21,13 +21,10 @@ export const Post: React.FC<IPost> = (post) => {
 	return (
 		<div className="self-center w-full pt-4 rounded-box bg-base-200 hover:brightness-90 transition-all duration-300">
 			<div className="flex">
-				<button className="w-14 h-14 btn btn-circle overflow-hidden ml-4 bg-neutral">
-					<Image width={56} height={56} src={avatar} alt="avatar" />
-				</button>
+				<PostAvatar source={avatar} />
 				<div className="flex-1" style={{ width: "calc(100% - 4.5rem)" }}>
 					<PostHead
 						privacy={privacy}
-						avatar={avatar}
 						createdAt={createdAt}
 						name={name}
 						username={username}

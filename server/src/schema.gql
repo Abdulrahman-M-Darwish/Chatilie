@@ -203,6 +203,7 @@ type Query {
   profile(id: ID!): Profile!
   profiles: [Profile!]!
   reactions(postId: String!): FindReaction!
+  search(q: String!): SearchResults!
   user(id: ID!): User!
   users: [User!]!
 }
@@ -211,6 +212,11 @@ type Reaction {
   count: Int!
   post: Post!
   user: User!
+}
+
+type SearchResults {
+  posts: [Post!]
+  users: [User!]
 }
 
 input SignupInput {

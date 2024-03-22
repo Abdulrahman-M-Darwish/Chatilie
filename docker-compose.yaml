@@ -6,20 +6,20 @@ services:
     container_name: chatilie_client
     restart: always
     volumes:
-      - client-modules:/app/client/node_modules
-      - ./client:/app/client
+      - client-modules:/app/node_modules
+      - ./client:/app
     depends_on:
       - server
     ports:
       - 3000:3000
   server:
-    build: "./server"
+    build: ./server
     container_name: chatilie_server
     restart: always
     volumes:
-      - server-modules:/app/server/node_modules
-      - ./server:/app/server
-      - ./client/src/types/index.ts:/app/server/src/types.ts
+      - server-modules:/app/node_modules
+      - ./server:/app
+      - ./client/src/types/index.ts:/app/src/types.ts
     depends_on:
       - primary_db
       - chaching_db
@@ -51,6 +51,8 @@ services:
     restart: always
     ports:
       - 8888:80
+    logging:
+      driver: none
     env_file:
       - ./server/.env
     volumes:

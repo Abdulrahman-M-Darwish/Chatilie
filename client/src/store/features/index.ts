@@ -6,3 +6,4 @@ export * from "./post/postSlice";
 export * from "./chat/chatSlice";
 export * from "./message/messageSlice";
 export * from "./file/fileSlice";
+export * from "./navbar/navbarSlice";

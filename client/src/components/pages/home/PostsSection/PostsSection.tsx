@@ -6,43 +6,37 @@ import {
 	ON_POST_REMOVED,
 	ON_POST_UPDATED,
 } from "./operations";
-import { useQuery, useSubscription } from "@apollo/client";
+import {
+	DocumentNode,
+	OperationVariables,
+	useQuery,
+	useSubscription,
+} from "@apollo/client";
 import { NoPosts, Post } from "@/components";
 import { Post as IPost } from "@/types";
+import { usePostSubscriptions } from "@/hooks";
 
-export const PostsSection: React.FC = () => {
+type Props = {
+	query?: DocumentNode;
+	variables?: OperationVariables;
+};
+
+export const PostsSection: React.FC<Props> = ({ query, variables }) => {
 	const [posts, setPosts] = useState<IPost[]>([]);
-	useQuery(GET_POSTS, {
+	useQuery(query || GET_POSTS, {
+		variables,
 		onCompleted({ posts: queriedPosts }) {
 			setPosts((p) => [...p, ...queriedPosts]);
 		},
 	});
-	useSubscription(ON_POST_CREATED, {
-		onData({ data: { data } }) {
-			setPosts((p) => [data.postAdded, ...p]);
-		},
-	});
-	useSubscription(ON_POST_UPDATED, {
-		onData({ data: { data } }) {
-			const updatedPost = data.postUpdated as IPost;
-			setPosts((p) =>
-				p.map((post) => (post.id === updatedPost.id ? updatedPost : post))
-			);
-		},
-	});
-	useSubscription(ON_POST_REMOVED, {
-		onData({ data: { data } }) {
-			setPosts((p) => p.filter((post) => post.id !== data.postRemoved));
-		},
-	});
-	return (
-		<>
-			{posts.length == 0 && <NoPosts />}
-			<ul className="Posts flex flex-col gap-4">
-				{posts.map((post: IPost) => (
-					<Post key={post.id} {...post} />
-				))}
-			</ul>
-		</>
+	usePostSubscriptions({ setPosts });
+	return posts.length == 0 ? (
+		<NoPosts />
+	) : (
+		<ul className="Posts flex flex-col gap-4">
+			{posts.map((post) => (
+				<Post key={post.id} {...post} />
+			))}
+		</ul>
 	);
 };

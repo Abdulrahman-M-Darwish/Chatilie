@@ -21,12 +21,12 @@ export const Cover: React.FC<Props> = ({}) => {
 			ref={buttonRef}
 			className="cursor-pointer shadow-2xl btn btn-ghost rounded-none w-full block h-auto p-0 relative"
 		>
-			{preview || profile.cover ? (
+			{preview || profile?.cover ? (
 				<Image
 					alt="cover"
 					width={1920}
 					height={1080}
-					src={preview || profile.cover!}
+					src={preview || profile?.cover || ""}
 					className="aspect-[16/6] pointer-events-none"
 				/>
 			) : (

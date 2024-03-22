@@ -28,14 +28,14 @@ export const ProfileEditor: React.FC = () => {
 	const [uploadMedias] = useMutation(UPLOAD_MEDIAS);
 	const [updateProfile] = useMutation(UPDATE_PROFILE);
 	const [updateUser] = useMutation(UPDATE_USER);
-	const [hobbies, setHobbies] = useState<string[]>(profile.hobbies || []);
+	const [hobbies, setHobbies] = useState<string[]>(profile?.hobbies || []);
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const dispatch = useAppDispatch();
 	const formik = useFormik({
 		initialValues: {
 			username: user.username,
-			bio: profile.bio || "",
+			bio: profile?.bio || "",
 		},
 		onSubmit() {},
 	});
@@ -45,7 +45,7 @@ export const ProfileEditor: React.FC = () => {
 		const profileFieldsToUpdate = {
 			bio,
 			hobbies,
-			cover: profile.cover,
+			cover: profile?.cover,
 		};
 		const userFieldsToUpdate = {
 			username,

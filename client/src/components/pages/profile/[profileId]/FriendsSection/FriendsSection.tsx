@@ -2,27 +2,33 @@
 import { Gender, User } from "@/types";
 import { useQuery } from "@apollo/client";
 import Image from "next/image";
-import { GET_FRIENDS } from "./operations";
+import { GET_FRIENDS } from "../operations";
 import { Button } from "react-daisyui";
 import Link from "next/link";
 import { useAppSelector } from "@/store";
 
 type Props = {
-	isMe: Boolean;
-	userId: string;
-	gender: Gender;
+	userName: string;
 };
 
-export const FriendsSection: React.FC<Props> = ({ isMe, gender, userId }) => {
+export const FriendsSection: React.FC<Props> = ({ userName }) => {
+	const currentUserName = useAppSelector((state) => state.user.user?.name);
+	const isMe = userName == currentUserName;
+	const profile = useAppSelector((state) =>
+		isMe ? state.user.profile : state.profile.profile
+	);
+	const userId = useAppSelector((state) =>
+		isMe ? state.user.user?.id : state.profile.user?.id
+	);
 	const { data } = useQuery(GET_FRIENDS, { variables: { userId } });
-	const userName = useAppSelector((state) => state.user.user?.name);
+	const prone = profile?.gender === Gender.MALE ? "He" : "She";
 	return (
 		<div className="bg-base-200 p-4 rounded-box">
 			<h2
 				className={`text-2xl font-bold mb-4 ${
 					data?.chats?.length == 0
 						? "text-error"
-						: data?.chats?.length == 1 && data?.chats[0].name == userName
+						: data?.chats?.length == 1 && data?.chats[0].name == currentUserName
 						? "text-success"
 						: ""
 				}`}
@@ -40,8 +46,7 @@ export const FriendsSection: React.FC<Props> = ({ isMe, gender, userId }) => {
 						</>
 					) : (
 						<>
-							{gender === Gender.MALE ? "He" : "She"} Got No Friends! Maybe{" "}
-							{gender === Gender.MALE ? "He" : "She"} Is A{" "}
+							{prone} Got No Friends! Maybe {prone} Is A{" "}
 							<span className="text-error font-semibold underline">
 								Serial Killer?
 							</span>
@@ -49,18 +54,18 @@ export const FriendsSection: React.FC<Props> = ({ isMe, gender, userId }) => {
 					)}
 				</p>
 			)}
-			{data?.chats?.length == 1 && data?.chats[0].name === userName && (
+			{data?.chats?.length == 1 && data?.chats[0].name === currentUserName && (
 				<p>
-					{gender === Gender.MALE ? "He" : "She"} Got No Friend Except You Maybe{" "}
+					{prone} Got No Friend Except You Maybe{" "}
 					<span className="text-success font-bold">You</span> Are Something{" "}
 					<span className="text-success font-bold">Important</span> To{" "}
-					{gender === Gender.MALE ? "Him" : "Her"}
+					{profile?.gender === Gender.MALE ? "Him" : "Her"}
 				</p>
 			)}
 			<div className="grid grid-cols-3 gap-2">
 				{data?.chats?.map(
 					(friend: User) =>
-						friend.name !== userName && (
+						friend.name !== currentUserName && (
 							<Link key={friend.avatar} href={`/profile/@${friend.name}`}>
 								<Button className="h-auto rounded-box p-1 pb-0 bg-base-100 w-auto">
 									<Image

@@ -17,6 +17,7 @@ import { MessagesModule } from './messages/messages.module';
 import { ChatModule } from './chat/chat.module';
 import { UsersService } from './users/users.service';
 import { ReactionsModule } from './reactions/reactions.module';
+import { ElasticsearchModule } from './elasticsearch/elasticsearch.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReactionsModule } from './reactions/reactions.module';
     MessagesModule,
     ChatModule,
     ReactionsModule,
+    ElasticsearchModule,
   ],
 })
 export class AppModule {}

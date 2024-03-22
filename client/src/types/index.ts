@@ -263,6 +263,7 @@ export interface IQuery {
     profile(id: string): Profile | Promise<Profile>;
     profiles(): Profile[] | Promise<Profile[]>;
     reactions(postId: string): FindReaction | Promise<FindReaction>;
+    search(q: string): SearchResults | Promise<SearchResults>;
     user(id: string): User | Promise<User>;
     users(): User[] | Promise<User[]>;
 }
@@ -271,6 +272,11 @@ export interface Reaction {
     count: number;
     post: Post;
     user: User;
+}
+
+export interface SearchResults {
+    posts?: Nullable<Post[]>;
+    users?: Nullable<User[]>;
 }
 
 export interface ISubscription {

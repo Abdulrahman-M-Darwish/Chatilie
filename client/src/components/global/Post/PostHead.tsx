@@ -14,7 +14,6 @@ import { PostDropdown } from "./PostDropdown";
 type Props = {
 	username: string;
 	name: string;
-	avatar: string;
 	privacy: Privacy;
 	createdAt: string;
 	postId?: string;
@@ -23,7 +22,6 @@ type Props = {
 };
 
 export const PostHead: React.FC<Props> = ({
-	avatar,
 	createdAt,
 	name,
 	privacy,
@@ -36,7 +34,7 @@ export const PostHead: React.FC<Props> = ({
 		<div className="Header flex justify-between mx-4">
 			<div className="flex gap-2 items-center">
 				<h2>{username}</h2>
-				<h3 className="text-xs text-base-content/50 tracking-tighter flex items-center">
+				<h3 className="text-xs text-base-content/50 tracking-tighter flex items-center overflow-clip">
 					@{name}
 					<span className="w-1 h-1 inline-block mx-1 rounded-full bg-base-content/50" />
 					{privacy == Privacy.PUBLIC ? (

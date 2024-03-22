@@ -8,6 +8,7 @@ import {
 	chatSlice,
 	messageSlice,
 	fileSlice,
+	navbarSlice,
 } from "./features";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import {
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
 	post: postSlice.reducer,
 	file: fileSlice.reducer,
 	message: messageSlice.reducer,
+	navbar: navbarSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

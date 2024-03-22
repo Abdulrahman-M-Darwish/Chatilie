@@ -9,29 +9,42 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import Link from "next/link";
 import Image from "next/image";
 import { User } from "@/types";
-import { FaUserInjured } from "react-icons/fa";
 import { themeChange } from "theme-change";
-import { setIsDark, setUser } from "@/store/features";
-import { gql, useMutation } from "@apollo/client";
-import { useRouter } from "next/navigation";
+import {
+	setIsDark,
+	setIsMinimal,
+	setUser,
+	setUserProfile,
+} from "@/store/features";
+import { useMutation } from "@apollo/client";
+import { usePathname, useRouter } from "next/navigation";
 import { DynamicDropdown } from "..";
 import { Dropdown } from "react-daisyui";
-
-const ringButton =
-	"btn btn-ghost justify-start text-xl gap-4 ring-primary ring-offset-[10px] hover:text-primary hover:ring hover:ring-offset-base-300 hover:outline hover:outline-primary transition-all relative";
+import { LOGOUT } from "./operations";
 
 export const Navbar: React.FC = () => {
 	const user = useAppSelector((state) => state.user.user) as User;
+	const isMinimal = useAppSelector((state) => state.navbar.isMinimal);
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const { replace } = useRouter();
-	const [logout] = useMutation(
-		gql`
-			mutation Logout {
-				logout
-			}
-		`
-	);
+	const [logout] = useMutation(LOGOUT);
 	const dispatch = useAppDispatch();
+	const pathname = usePathname();
+	useEffect(() => {
+		console.log(pathname);
+		console.log(pathname.split("/"));
+
+		const link = links(user.name).find((link) =>
+			link.path.startsWith("/" + pathname.split("/")[1])
+		);
+		if (link?.isMinimal) {
+			if (isMinimal) return;
+			dispatch(setIsMinimal(true));
+		} else {
+			if (!isMinimal) return;
+			dispatch(setIsMinimal(false));
+		}
+	}, [dispatch, isMinimal, pathname, user.name]);
 	useEffect(() => {
 		themeChange(false);
 		dispatch(
@@ -43,36 +56,39 @@ export const Navbar: React.FC = () => {
 		);
 	}, [dispatch]);
 	return (
-		<nav className="sticky top-0 h-screen px-4 z-50 gap-4 flex flex-col py-8">
+		<nav
+			className={
+				"sticky top-0 h-screen px-4 z-50 gap-4 flex flex-col py-8 " +
+				(isMinimal ? "minimal-nav" : null)
+			}
+		>
 			<div className="Logo max-lg:mx-auto w-fit">
 				<Link href="/">
-					<h1 className="text-4xl font-black">
+					<h1 className="text-4xl font-bold">
 						C<span className="max-lg:hidden">hati</span>
-						<span className="text-primary">
+						<i className="text-primary font-black not-italic">
 							L<span className="max-lg:hidden">ie</span>
-						</span>
+						</i>
 					</h1>
 				</Link>
 			</div>
 			<div className="Links flex flex-col gap-4 py-4">
-				{links.map((link) => (
-					<Link key={link.name} href={link.path} className={ringButton}>
-						<link.icon className="text-2xl" />
-						<h2 className="max-lg:hidden">{link.name}</h2>
-					</Link>
-				))}
-				<Link href={`/profile/@${user.name}`} className={ringButton}>
-					<FaUserInjured className="text-2xl" />
-					<h2 className="max-lg:hidden">profile</h2>
-				</Link>
+				{links(user.name).map((link) =>
+					link?.skip ? null : (
+						<Link key={link.name} href={link.path} className="ring-button">
+							<link.icon className="text-2xl" />
+							<h2 className="max-lg:hidden ring-btn-text">{link.name}</h2>
+						</Link>
+					)
+				)}
 			</div>
 			<div className="mt-auto">
 				<button
-					className={ringButton + " w-full"}
+					className="ring-button w-full"
 					onClick={() => dialogRef.current!.showModal()}
 				>
 					<HiOutlineColorSwatch className="text-2xl" />
-					<h2 className="max-lg:hidden">Themes</h2>
+					<h2 className="max-lg:hidden ring-btn-text">Themes</h2>
 				</button>
 				<dialog id="my_modal_1" className="modal" ref={dialogRef}>
 					<div className="modal-action bg-base-100 h-[60vh] relative flex flex-col">
@@ -80,10 +96,10 @@ export const Navbar: React.FC = () => {
 							method="dialog"
 							className="bg-base-100 shadow-lg flex justify-between"
 						>
-							<button className={`${ringButton}`}>
+							<button className="ring-button">
 								<GiCrossedSwords />
 							</button>
-							<button type="button" className={`${ringButton}`}>
+							<button type="button" className="ring-button">
 								<BsThreeDotsVertical />
 							</button>
 						</form>
@@ -128,7 +144,7 @@ export const Navbar: React.FC = () => {
 					</div>
 				</dialog>
 				<DynamicDropdown className="w-full mt-8">
-					<Dropdown.Details.Toggle className={ringButton + " w-full"}>
+					<Dropdown.Details.Toggle className="ring-button w-full">
 						<Image
 							width={40}
 							height={40}
@@ -136,7 +152,7 @@ export const Navbar: React.FC = () => {
 							alt="Avatar"
 							className="bg-neutral rounded-full p-0.5"
 						/>
-						<h2 className="max-lg:hidden">{user?.username}</h2>
+						<h2 className="max-lg:hidden ring-btn-text">{user?.username}</h2>
 					</Dropdown.Details.Toggle>
 					<Dropdown.Menu className="bg-base-300 w-52 mb-5">
 						<li>
@@ -147,8 +163,9 @@ export const Navbar: React.FC = () => {
 						</li>
 						<li
 							onClick={async () => {
-								await logout();
 								dispatch(setUser(null));
+								dispatch(setUserProfile(null));
+								await logout();
 								replace("/login");
 							}}
 						>

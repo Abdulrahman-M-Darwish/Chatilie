@@ -1,6 +1,4 @@
-import { GqlOptionsFactory } from '@nestjs/graphql';
-import { Injectable } from '@nestjs/common';
-import { ApolloDriverConfig, ApolloDriverConfigFactory } from '@nestjs/apollo';
+import { ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { Context } from 'graphql-ws';
 import { join } from 'path';

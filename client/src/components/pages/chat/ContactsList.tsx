@@ -52,11 +52,11 @@ export const ContactsList: React.FC = () => {
 						className="btn btn-ghost rounded-lg w-full flex items-center justify-between h-auto py-3 normal-case"
 					>
 						<Image
-							width={50}
-							height={50}
+							width={60}
+							height={60}
 							src={user.avatar}
 							alt="Avatar"
-							className={`rounded-full ring ring-offset-base-300/50 p-0.5 ring-offset-2 bg-base-300/50 backdrop-blur-3xl ${
+							className={`rounded-full ring ring-offset-neutral/50 p-0.5 ring-offset-2 bg-neutral/50 backdrop-blur-3xl ${
 								user.isActive ? "ring-success" : "ring-error"
 							}`}
 						/>
