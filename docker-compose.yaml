@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  client:
+    container_name: chatilie_client
+    restart: always
+    volumes:
+      - client-modules:/app/node_modules
+      - ./client:/app
+    depends_on:
+      - server
+    ports:
+      - 3000:3000
+  server:
+    container_name: chatilie_server
+    restart: always
+    volumes:
+      - server-modules:/app/node_modules
+      - ./server:/app
+      - ./client/src/types/index.ts:/app/src/types.ts
+    depends_on:
+      primary_db:
+        condition: service_started
+      chaching_db:
+        condition: service_started
+      es01:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+  primary_db:
+    image: postgres:16-alpine
+    container_name: chatilie_primary_db
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ./server/.env
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+  chaching_db:
+    image: redis:alpine
+    restart: always
+    container_name: chatilie_chaching_db
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379:6379
+    env_file:
+      - ./server/.env
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    restart: always
+    ports:
+      - 8888:80
+    logging:
+      driver: none
+    env_file:
+      - ./server/.env
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  client-modules:
+  server-modules:
+  pg-data:
+  pgadmin-data:
+  redis-data:

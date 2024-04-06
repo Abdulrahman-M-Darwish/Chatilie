@@ -1,0 +1,336 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AuthorInput {
+  email: String
+  id: String
+  name: String
+}
+
+input CreateChatInput {
+  users: [CreateChatUsersInput!]!
+}
+
+input CreateChatUsersInput {
+  id: String!
+}
+
+input CreateFriendInput {
+  friendId: String!
+}
+
+input CreateMessageInput {
+  chatId: String!
+  mediaUrls: [String!]
+  text: String
+  userId: String!
+}
+
+input CreateNotificationInput {
+  from: String!
+  to: String!
+  type: NotificationType!
+}
+
+input CreatePostInput {
+  commentedPostId: String
+  mediaUrls: [String!]
+  privacy: Privacy
+  rePostedPostId: String
+  text: String
+}
+
+input CreateProfileInput {
+  gender: Gender!
+}
+
+input CreateReactionInput {
+  postId: String!
+  userId: String!
+}
+
+input CreateUserInput {
+  birthDate: String!
+  email: String!
+  gender: Gender!
+  name: String!
+  password: String!
+  username: String!
+}
+
+input FindNotificationsInput {
+  take: Int
+  where: Where
+}
+
+input FindPostsInput {
+  author: AuthorInput
+  commentedPostId: String
+  id: String
+  text: String
+}
+
+type FindReaction {
+  count: Int!
+  reactions: [Reaction!]!
+}
+
+input FindUserInput {
+  skip: Int
+  take: Int
+}
+
+type Friend {
+  avatar: String!
+  birthDate: String!
+  chatId: String
+  createdAt: String!
+  email: String!
+  friends: [User!]!
+  friendsCount: Int!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  notifications: [Notification!]!
+  posts: [Post!]!
+  profile: Profile!
+  updatedAt: String!
+  username: String!
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Media {
+  access_control: [String!]!
+  access_mode: String!
+  bytes: Int!
+  colors: [[String!]!]!
+  created_at: String!
+  etag: String!
+  format: String!
+  height: Int!
+  moderation: [String!]!
+  original_filename: String!
+  placeholder: Boolean!
+  public_id: String!
+  resource_type: String!
+  secure_url: String!
+  signature: String!
+  tags: [String!]!
+  type: String!
+  url: String!
+  version: Int!
+  width: Int!
+}
+
+type Message {
+  author: User!
+  createdAt: String!
+  id: ID!
+  mediaUrls: [String!]
+  text: String
+  updatedAt: String!
+}
+
+type Mutation {
+  createChat(createChatInput: CreateChatInput!): User!
+  createFriend(createFriendInput: CreateFriendInput!): Friend!
+  createMessage(createMessageInput: CreateMessageInput!): Message!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  createPost(createPostInput: CreatePostInput!): Post!
+  createProfile(createProfileInput: CreateProfileInput!): Profile!
+  createReaction(createReactionInput: CreateReactionInput!): Reaction!
+  createUser(createUserInput: CreateUserInput!): User!
+  login(loginInput: LoginInput!): User!
+  logout: String!
+  removeChat(id: String!): User!
+  removeFriend(id: String!): String!
+  removeMessage(id: Int!): Message!
+  removeNotification(id: Int!): Notification!
+  removePost(id: ID!): Post!
+  removeProfile(id: ID!): Profile!
+  removeReaction(postId: String!): String!
+  removeUser(id: ID!): User!
+  signup(signupInput: SignupInput!): User!
+  updateMessage(updateMessageInput: UpdateMessageInput!): Message!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  updatePost(id: ID!, updatePostInput: UpdatePostInput!): Post!
+  updateProfile(id: ID!, updateProfileInput: UpdateProfileInput!): Profile!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  uploadMedias(uploadMediasInput: UploadMediasInput!): [Media!]!
+}
+
+type Notification {
+  createdAt: String!
+  from: User!
+  id: ID!
+  isSaw: Boolean!
+  message: String!
+  to: User!
+  type: NotificationType!
+  updatedAt: String!
+}
+
+enum NotificationType {
+  FRIEND_ACCEPTED
+  FRIEND_REQUEST
+  POST_LIKED
+}
+
+type Post {
+  author: User!
+  commentedPostId: String
+  createdAt: String!
+  id: ID!
+  mediaUrls: [String!]
+  privacy: Privacy!
+  rePostedPostId: String
+  text: String
+  updatedAt: String!
+}
+
+enum Privacy {
+  ONLY_FRIENDS
+  PRIVATE
+  PUBLIC
+}
+
+type Profile {
+  bio: String
+  country: String
+  cover: String
+  createdAt: String!
+  gender: Gender!
+  hobbies: [String!]
+  id: ID!
+  reputationOfAllTime: Int!
+  reputationOfMonth: Int!
+  reputationOfWeek: Int!
+  reputationOfYear: Int!
+  updatedAt: String!
+  user: User!
+}
+
+type Query {
+  chats(userId: ID): [User!]!
+  messages(chatId: ID!): [Message!]
+  notifications(findNotificationsInput: FindNotificationsInput): [Notification!]!
+  notificationsCount(userId: String): Int!
+  post(id: ID!): Post!
+  posts(findPostsInput: FindPostsInput): [Post!]
+  profile(id: ID!): Profile!
+  profiles: [Profile!]!
+  reactions(postId: String!): FindReaction!
+  search(q: String!): SearchResults!
+  user(id: ID!): User!
+  users(findUserInput: FindUserInput): [User!]!
+}
+
+type Reaction {
+  count: Int!
+  post: Post!
+  user: User!
+}
+
+type SearchResults {
+  posts: [Post!]
+  users: [User!]
+}
+
+input SignupInput {
+  birthDate: String!
+  email: String!
+  gender: Gender!
+  name: String!
+  password: String!
+  username: String!
+}
+
+type Subscription {
+  messageCreated: Message!
+  onNotificationCreated: Notification!
+  postAdded: Post!
+  postRemoved: String!
+  postUpdated: Post!
+  userUpdated: User!
+}
+
+input UpdateMessageInput {
+  chatId: String
+  mediaUrls: [String!]
+  messageId: String!
+  text: String
+  userId: String
+}
+
+input UpdateNotificationInput {
+  id: String!
+  type: NotificationType
+}
+
+input UpdatePostInput {
+  commentedPostId: String
+  mediaUrls: [String!]
+  privacy: Privacy
+  rePostedPostId: String
+  text: String
+}
+
+input UpdateProfileInput {
+  bio: String
+  country: String
+  cover: String
+  gender: Gender
+  hobbies: [String!]
+  reputationOfAllTime: Int
+  reputationOfMonth: Int
+  reputationOfWeek: Int
+  reputationOfYear: Int
+}
+
+input UpdateUserInput {
+  avatar: String
+  id: String
+  isActive: Boolean
+  password: String
+  profile: UpdateProfileInput
+  username: String
+}
+
+input UploadMediasInput {
+  base64EncodedImages: [String!]!
+  folder: String!
+}
+
+type User {
+  avatar: String!
+  birthDate: String!
+  chatId: String
+  createdAt: String!
+  email: String!
+  friends: [User!]!
+  friendsCount: Int!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  notifications: [Notification!]!
+  posts: [Post!]!
+  profile: Profile!
+  updatedAt: String!
+  username: String!
+}
+
+input Where {
+  id: String
+  isSaw: Boolean
+  type: NotificationType
+}

@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  client:
+    build:
+      context: ./client
+      target: production
+  server:
+    build:
+      context: ./server
+      target: production
