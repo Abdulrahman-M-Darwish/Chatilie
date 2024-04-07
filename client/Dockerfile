@@ -16,6 +16,5 @@ RUN corepack enable pnpm
 RUN pnpm install --frozen-lockfile
 EXPOSE 3000
 COPY . .
-RUN rm -rf ./.next/cache
 RUN pnpm build
 CMD pnpm start
