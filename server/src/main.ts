@@ -10,7 +10,10 @@ import 'dotenv/config';
 import { json } from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: true });
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true,
+    abortOnError: true,
+  });
   app.use(json({ limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({

@@ -5,7 +5,12 @@ services:
     build:
       context: ./client
       target: development
+    volumes:
+      - ./client/src:/app/src
   server:
     build:
       context: ./server
       target: development
+    volumes:
+      - ./server/src:/app/src
+      - ./client/src/types/index.ts:/app/src/types.ts

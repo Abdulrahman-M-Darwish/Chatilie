@@ -5,7 +5,15 @@ services:
     build:
       context: ./client
       target: production
+    volumes:
+      - client-build:/app/.next
   server:
     build:
       context: ./server
       target: production
+    volumes:
+      - server-build:/app/dist
+
+volumes:
+  client-build:
+  server-build:

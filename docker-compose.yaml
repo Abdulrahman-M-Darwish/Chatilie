@@ -6,7 +6,6 @@ services:
     restart: always
     volumes:
       - client-modules:/app/node_modules
-      - ./client:/app
     depends_on:
       - server
     ports:
@@ -16,8 +15,6 @@ services:
     restart: always
     volumes:
       - server-modules:/app/node_modules
-      - ./server:/app
-      - ./client/src/types/index.ts:/app/src/types.ts
     depends_on:
       primary_db:
         condition: service_started
